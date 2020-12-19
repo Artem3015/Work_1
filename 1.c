@@ -143,9 +143,7 @@ int main(int argc, char **argv)
 
       { /* сообщаем клиенту об ошибке открытия файла */
 
-        snprintf(fifoname, sizeof(fifoname), "Сервер: ошибка открытия файла %s:
-
-        %s\n", ptr, strerror(errno));
+        snprintf(fifoname, sizeof(fifoname), "Сервер: ошибка открытия файла %s:%s\n", ptr, strerror(errno));
 
         write(writefifo, fifoname, strlen(fifoname));
 
