@@ -39,12 +39,21 @@ int main(int argc, char **argv)
   char *ptr, buff[MAXLINE];
 
   pid_t pid;
-
+  char dir[N];
+	if (getcwd(dir, N) == NULL) { 
+		printf("getcwd error\n");
+		exit(errno);
+	}
+  char path[N];//адрес файла
+  
   /* создание FIFO с именем, включающим PID; если уже существует - OK */
-
+  sprintf(path,"%s/FIFO.fifo",dir)
+  fd_w = open (path, O_WRONLY); // открыли файл  FIFO.fifo 
   pid = getpid();
 
   snprintf(fifoname, sizeof(fifoname), "/tmp/fifo.%ld", (long) pid);
+	close(fd_w);
+
 
   if ((mkfifo(fifoname, FILE_MODE) < 0) && (errno != EEXIST))
 
@@ -82,7 +91,12 @@ int main(int argc, char **argv)
 
   /* чтение полного имени файла из стандартного потока ввода */
 
-  if (fgets(ptr, MAXLINE - len, stdin) == NULL)
+//if (fgets(ptr, MAXLINE - len, stdin) == NULL)
+if ( write(fd_w, data, N) == -1 ){
+		printf("write in fifo error\n");
+		exit (errno);
+	}
+	close(fd_w);
 
   { /* fgets() гарантирует завершающий нулевой байт */
 
